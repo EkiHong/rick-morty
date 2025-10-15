@@ -1,0 +1,16 @@
+# 測試框架
+pytest==7.4.3
+pytest-html==4.1.1
+pytest-xdist==3.5.0
+allure-pytest==2.13.2
+
+# HTTP request
+requests==2.32.4
+playwright==1.40.0
+
+# tool
+python-dotenv==1.0.0
+jsonschema==4.20.0
+
+# log&report
+colorlog==6.8.0
