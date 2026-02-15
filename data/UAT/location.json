@@ -1,0 +1,15 @@
+{
+    "test_earth_location": {
+        "location_name": "Earth",
+        "expected_dimension": "Dimension C-137"
+    },
+    "test_location_by_id": {
+        "location_id": 1,
+        "expected_name": "Earth (C-137)",
+        "expected_type": "Planet"
+    },
+    "test_location_residents": {
+        "location_name": "Earth",
+        "expected_min_residents": 1
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "test_single_character": {
+        "character_id": 1,
+        "expected_name": "Rick Sanchez",
+        "expected_status": "Alive",
+        "expected_species": "Human"
+    },
+    "test_multiple_characters": {
+        "character_ids": [1, 2, 3],
+        "expected_count": 3
+    },
+    "test_character_search": {
+        "search_name": "Rick",
+        "expected_min_results": 1
+    },
+    "test_invalid_character": {
+        "character_id": 999999,
+        "expected_error": true
+    }
+}
