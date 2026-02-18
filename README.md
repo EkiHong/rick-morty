@@ -116,3 +116,42 @@ pytest -m smoke
 2. Testcase 層呼叫 API 並將測資塞入
 3. User 在 Testcase 層使用時，明確知道是呼叫哪隻 API、Flow，明確知道塞入什麼 Testdata 
 
+## 架構設計理念
+
+本框架的核心設計思想是**徹底分離「不變的」與「易變的」**，將底層的技術細節與上層的業務邏輯清晰地解耦。這使得框架易於維護、擴充和閱讀。
+
+### 分層職責劃分
+
+#### 1. 核心底層 (`ABC Class`)
+
+
+#### 2. 核心框架層 (`RequestAPI`、`PlaywrightAPI`)
+- **定位**: 技術基石，處理 **"如何發送請求"** 的技術細節。
+- **持有**:
+    - `base_url` (例如: `https://rickandmortyapi.com/api`)
+    - 通用的 `headers`
+    - `requests.Session` 物件，用於保持連線與設定。
+- **提供**: `get()`, `post()`, `put()`, `delete()` 等原子性的 HTTP 方法。它不關心業務邏輯，只負責忠實地完成 HTTP 通訊。
+
+#### 2. API 封裝層 (`Unit`)
+- **定位**: 業務資源的封裝，處理 **"要請求哪個業務資源"**。
+- **持有**:
+    - API 的 `path` (例如: `/character`, `/location/{id}`)
+    - `payload` 的結構定義。
+- **提供**: 具有業務意義的方法，例如 `get_single_character(id)`, `filter_characters(status='alive')`。這些方法內部會去呼叫 `Framework` 層提供的 `get` 或 `post` 方法。
+
+#### 3. 測試案例層 (`Testcase`)
+- **定位**: 業務驗證，專注於 **"測什麼"** 和 **"如何驗證"**。
+- **職責**:
+    - 準備測試資料。
+    - 呼叫 `Unit` 層或 `Flow` 層的業務方法。
+    - 使用斷言 (assertion) 驗證回傳結果是否符合預期。
+- **優勢**: 測試案例的程式碼讀起來就像在讀業務需求，非常直觀，無需關心底層實現。
+
+### 執行流程範例
+
+1.  **初始化 (Setup Phase)**: 在 `conftest.py` 的 `fixture` 中，建立 `Unit` 層的 API 物件 (例如 `CharacterAPI`)。在建立物件時，將固定的 `base_url` 和 `headers` 作為參數傳入，完成底層客戶端的初始化。
+2.  **測試執行 (Test Phase)**: 測試案例從 `fixture` 獲取初始化好的 API 物件，直接呼叫其業務方法 (如 `get_single_character(1)`)。
+3.  **請求發送**: `Unit` 層的方法會準備好 `path`，並呼叫 `Framework` 層的 `get()` 或 `post()`。`Framework` 層負責將 `base_url` 和 `path` 組合，並使用設定好的 `headers` 發送最終的 HTTP 請求。
+
+透過這樣的設計，當 API 的 `path` 或 `payload` 變更時，我們只需要修改對應的 `Unit` 層類別；如果整個服務的網域變更，只需修改環境配置，從而實現了高度的可維護性。

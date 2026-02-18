@@ -16,3 +16,7 @@ jsonschema==4.20.0
 
 # log&report
 colorlog==6.8.0
+
+# Validation models
+pydantic                  2.12.5
+pydantic_core             2.41.5
