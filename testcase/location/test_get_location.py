@@ -4,10 +4,13 @@ from schemas.common import PaginatedResponse
 from schemas.location import LocationModel
 
 
-def test_get_first_locations(location):
-    """驗證所有地點中的第一個地點，並驗證其資料正確性"""
+def test_get_first_location(location):
+    """ 驗證以下資訊
+        1. all location 的回傳資料型態
+        2. 所有地點中的第一個地點的資料是否正確
+    """
     response = location.get_all_locations()
-    validated_data = PaginatedResponse[LocationModel](**response.json())
+    validated_data = response.validate(PaginatedResponse[LocationModel])
     first_location = validated_data.results[0]
 
     assert response.status_code == 200
@@ -19,50 +22,46 @@ def test_get_first_locations(location):
     assert first_location.dimension == "Dimension C-137"
 
 
-# 測試案例的程式碼現在變得非常乾淨，完全不需要關心 base_url 和 headers
-# def test_get_earth(location):
-#     """
-#     測試取得 ID 為 1 的地點 (Earth C-137)
+def test_get_earth(location):
+    """
+    驗證取得 ID 為 1 的地點 (Earth C-137)
+    """
+    response = location.get_single_location(1)
+    validated_data = response.validate(LocationModel)
     
-#     參數 'location' 由 conftest.py 中的 fixture 自動注入，
-#     它是一個已經初始化好的 Location 物件。
-#     """
-#     # 直接使用已經初始化好的 api 物件
-#     response = location.get_single_location(1)
-#     assert response.status_code == 200
-#     logging.info(f"API 回傳的完整資料: {response}")  # 新增這行來印出完整回應內容
-#     # assert response.status_code == 200
-#     # response_data = response.json()
-#     assert response["name"] == "Earth (C-137)"
-#     assert response["dimension"] == "Dimension C-137"
+    assert response.status_code == 200
+    assert validated_data.id == 1
+    assert validated_data.name == "Earth (C-137)"
+    assert validated_data.dimension == "Dimension C-137"
 
 
-# def test_filter_location_by_name(location):
-#     """
-#     測試透過名稱篩選地點
-#     """
-#     response = location.filter_locations(name="Post-Apocalyptic Earth")
-#     logging.info(f"API 回傳的完整資料: {type(response)}")  # 新增這行來印出完整回應內容
-    # assert response.status_code == 200
-    # response_data = response.json()
+def test_filter_location_by_name(location):
+    """
+    測試透過名稱篩選地點
+    """
+    response = location.filter_locations(name="Post-Apocalyptic Earth")
+    validated_data = response.validate(PaginatedResponse[LocationModel])
     
-    # API 可能回傳多個結果，我們檢查第一筆
-    # assert len(response_data["results"]) > 0
-    # assert response_data["results"][0]["name"] == "Post-Apocalyptic Earth"
-    # assert response_data["results"][0]["type"] == "Planet"
+    assert response.status_code == 200
+    assert len(validated_data.results) > 0
+    assert validated_data.results[0].name == "Post-Apocalyptic Earth"
+    assert validated_data.results[0].type == "Planet"
 
-# @pytest.mark.parametrize("location_id, expected_name", [
-#     (1, "Earth (C-137)"),
-#     (2, "Abadango"),
-#     (3, "Citadel of Ricks")
-# ])
-# def test_get_multiple_locations_by_id(location, location_id, expected_name):
-#     """
-#     使用參數化來測試多個地點 ID
-#     """
-#     response = location.get_single_location(location_id)
-#     logging.info(f"API 回傳的完整資料: {response}")  # 新增這行來印出完整回應內容
 
-    # assert response.status_code == 200
-    # assert response.json()["name"] == expected_name
+@pytest.mark.parametrize("location_id, expected_name", [
+    (1, "Earth (C-137)"),
+    (2, "Abadango"),
+    (3, "Citadel of Ricks"), 
+    (4, "Worldender's lair")
+])
+def test_get_multiple_locations_by_id(location, location_id, expected_name):
+    """
+    透過不同 ID 查詢不同地點，並驗證每個地點的資料是否正確。
+    """
+    response = location.get_single_location(location_id)
+    validated_data = response.validate(LocationModel)
+
+    assert response.status_code == 200
+    assert len(validated_data.name) > 0
+    assert validated_data.name == expected_name
 
