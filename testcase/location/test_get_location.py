@@ -1,7 +1,7 @@
 import pytest
 import logging
 from schemas.common import PaginatedResponse
-from schemas.location import LocationModel
+from schemas.location import LocationResponseModel
 
 
 def test_get_first_location(location):
@@ -10,7 +10,7 @@ def test_get_first_location(location):
         2. 所有地點中的第一個地點的資料是否正確
     """
     response = location.get_all_locations()
-    validated_data = response.validate(PaginatedResponse[LocationModel])
+    validated_data = response.validate(PaginatedResponse[LocationResponseModel])
     first_location = validated_data.results[0]
 
     assert response.status_code == 200
@@ -27,7 +27,7 @@ def test_get_earth(location):
     驗證取得 ID 為 1 的地點 (Earth C-137)
     """
     response = location.get_single_location(1)
-    validated_data = response.validate(LocationModel)
+    validated_data = response.validate(LocationResponseModel)
     
     assert response.status_code == 200
     assert validated_data.id == 1
@@ -40,7 +40,7 @@ def test_filter_location_by_name(location):
     測試透過名稱篩選地點
     """
     response = location.filter_locations(name="Post-Apocalyptic Earth")
-    validated_data = response.validate(PaginatedResponse[LocationModel])
+    validated_data = response.validate(PaginatedResponse[LocationResponseModel])
     
     assert response.status_code == 200
     assert len(validated_data.results) > 0
@@ -59,7 +59,7 @@ def test_get_multiple_locations_by_id(location, location_id, expected_name):
     透過不同 ID 查詢不同地點，並驗證每個地點的資料是否正確。
     """
     response = location.get_single_location(location_id)
-    validated_data = response.validate(LocationModel)
+    validated_data = response.validate(LocationResponseModel)
 
     assert response.status_code == 200
     assert len(validated_data.name) > 0

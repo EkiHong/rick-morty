@@ -1,0 +1,14 @@
+{
+    "test_create_article_null_title": {
+        "payload_override": {"title": null},
+        "expected_status": 400
+    },
+    "test_create_article_empty_body": {
+        "payload_override": {"body": ""},
+        "expected_status": 400
+    },
+    "test_create_article_invalid_userid": {
+        "payload_override": {"userId": "invalid_string"},
+        "expected_status": 400
+    }
+}
