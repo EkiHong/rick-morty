@@ -1,7 +1,6 @@
 import pytest
 from unit import Location
 
-# 假設您有一個讀取環境配置的函式
 from env.all import get_env_config
 
 
@@ -22,3 +21,21 @@ def location():
     # 3. 將初始化好的物件提供給測試案例
     yield api
 
+
+import pytest
+from unit import Location
+from unit.json_placeholder.json_placeholder import JSONPlaceholder
+
+
+# get_config() 之後必須修改成給予對應的參數(UAT, STG)，讓他去讀對應的 json 檔案，
+# 例如讀取 common.json 或是 json_placeholder.json，這樣才能拿到對應的 base_url 及 對應的測資。
+@pytest.fixture(scope="session")
+def json_placeholder_api():
+    """
+    專門提供給 JSONPlaceholder 測試使用的 API Client Fixture。
+    它的 base_url 是獨立的，與環境變數中的 Rick & Morty 無關。
+    """
+
+    base_url = "https://jsonplaceholder.typicode.com"
+    api = JSONPlaceholder(base_url=base_url)
+    yield api

@@ -1,15 +1,8 @@
 from typing import List, Optional
-
-# 我們假設 RequestAPI 類別存在於 framework.request_api 模組中
-# 並且提供了 self.get() 方法來發送 HTTP GET 請求。
 from framework.request_api import RequestAPI
 
 
 class Location(RequestAPI):
-    """
-    用於 /location 端點的 API 客戶端。
-    繼承自 RequestAPI 以處理底層 HTTP 請求。
-    """
 
     def __init__(self, base_url: str):
         """
