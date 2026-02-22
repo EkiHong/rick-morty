@@ -1,14 +1,45 @@
 {
-    "test_create_article_null_title": {
-        "payload_override": {"title": null},
-        "expected_status": 400
-    },
-    "test_create_article_empty_body": {
-        "payload_override": {"body": ""},
-        "expected_status": 400
-    },
-    "test_create_article_invalid_userid": {
-        "payload_override": {"userId": "invalid_string"},
-        "expected_status": 400
-    }
+    "test_create_new_article": [
+        {
+            "case_name": "create_standard_article",
+            "payload_override": {}, 
+            "expected_status": 201
+        },
+        {
+            "case_name": "create_article_with_custom_title",
+            "payload_override": {"title": "My Custom Title from DDT"},
+            "expected_status": 201
+        }
+    ],
+    "test_update_article": [
+        {
+            "case_name": "update_article_title_only",
+            "article_id": 1,
+            "payload_override": {"title": "Updated Title via DDT"},
+            "expected_status": 200
+        },
+        {
+            "case_name": "update_article_all_fields",
+            "article_id": 2,
+            "payload_override": {"title": "Fully Updated Title", "body": "Fully Updated Body", "userId": 99},
+            "expected_status": 200
+        }
+    ], 
+    "test_create_article_negative": [
+        {
+            "case_name": "test_create_article_null_title",
+            "payload_override": {"title": null},
+            "expected_status": 400
+        },
+        {
+            "case_name": "test_create_article_empty_body",
+            "payload_override": {"body": ""},
+            "expected_status": 400
+        },
+        {
+            "case_name": "test_create_article_invalid_userid",
+            "payload_override": {"userId": "invalid_string"},
+            "expected_status": 400
+        }
+    ]
 }

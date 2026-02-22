@@ -1,29 +1,26 @@
-import os
-import json
 import pytest
-from path import DATA
+from utils.common import load_test_data
 
-def load_data(env: str, file_path: str = None) -> list:
-    """
-    load json_placeholder 測試資料
-    """
-    # json_file_path = os.path.join(DATA, "UAT", "json_placeholder.json")
-    json_file_path = os.path.join(DATA)
-    with open(f"{json_file_path}/{env}/{file_path}", 'r', encoding='utf-8') as f:
-        test_data = json.load(f)
-    
-    return [
-        {
-            "case_name": name, 
-            "override": data["payload_override"], 
-            "expected_status": data["expected_status"]
-        }
-        for name, data in test_data.items()
-    ]
 
-@pytest.fixture(params=load_data("UAT", "json_placeholder.json"), ids=lambda d: d["case_name"])
+@pytest.fixture(
+    params=load_test_data("json_placeholder", "test_create_new_article"), 
+    ids=lambda d: d["case_name"]
+)
+def create_article_data(request):
+    """提供給正向新增文章測試的參數化 Fixture"""
+    return request.param
+
+@pytest.fixture(
+    params=load_test_data("json_placeholder", "test_update_article"), 
+    ids=lambda d: d["case_name"]
+)
+def update_article_data(request):
+    """提供給更新文章測試的參數化 Fixture"""
+    return request.param
+
+@pytest.fixture(
+    params=load_test_data("json_placeholder", "test_create_article_negative"), 
+    ids=lambda d: d["case_name"]
+)
 def negative_data(request):
-    """
-    區域性 Fixture: 只對 testcase/json_placeholder/ 底下的測試有效
-    """
     return request.param

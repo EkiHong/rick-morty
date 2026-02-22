@@ -39,12 +39,11 @@ def test_filter_location_by_name(location, filter_location_data):
     assert validated_data.results[0].type == filter_location_data["expected_type"]
 
 
-def test_get_multiple_locations_by_id(location, multiple_location_data):
+def test_get_multiple_locations_by_id(location, multiple_locations_data):
     """ 透過不同 ID 查詢不同地點，驗證回傳結果 """
-    # 完全移除了原本冗長的 @pytest.mark.parametrize 陣列
-    response = location.get_single_location(multiple_location_data["location_id"])
+    response = location.get_single_location(multiple_locations_data["location_id"])
     validated_data = response.validate(LocationResponseModel)
 
-    assert response.status_code == multiple_location_data["expected_status"]
+    assert response.status_code == multiple_locations_data["expected_status"]
     assert len(validated_data.name) > 0
-    assert validated_data.name == multiple_location_data["expected_name"]
+    assert validated_data.name == multiple_locations_data["expected_name"]

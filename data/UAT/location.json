@@ -1,18 +1,18 @@
 {
-    "get_first_location": {
+    "test_get_first_location": {
         "expected_status": 200,
         "expected_id": 1,
         "expected_name": "Earth (C-137)",
         "expected_type": "Planet",
         "expected_dimension": "Dimension C-137"
     },
-    "get_single_location": {
+    "test_get_earth": {
         "location_id": 1,
         "expected_status": 200,
         "expected_name": "Earth (C-137)",
         "expected_dimension": "Dimension C-137"
     },
-    "filter_locations": [
+    "test_filter_location_by_name": [
         {
             "case_name": "filter_by_name_post_apocalyptic_earth",
             "query_params": {"name": "Post-Apocalyptic Earth"},
@@ -28,7 +28,7 @@
             "expected_type": "Cluster"
         }
     ],
-    "multiple_locations": [
+    "test_get_multiple_locations_by_id": [
         {"case_name": "get_earth", "location_id": 1, "expected_name": "Earth (C-137)", "expected_status": 200},
         {"case_name": "get_abadango", "location_id": 2, "expected_name": "Abadango", "expected_status": 200},
         {"case_name": "get_citadel", "location_id": 3, "expected_name": "Citadel of Ricks", "expected_status": 200},
