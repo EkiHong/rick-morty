@@ -1,67 +1,50 @@
-import pytest
-import logging
 from schemas.common import PaginatedResponse
 from schemas.location import LocationResponseModel
 
-
-def test_get_first_location(location):
-    """ 驗證以下資訊
-        1. all location 的回傳資料型態
-        2. 所有地點中的第一個地點的資料是否正確
-    """
+def test_get_first_location(location, first_location_data):
+    """ 驗證所有地點中的第一個地點的資料是否與預期相符 """
     response = location.get_all_locations()
     validated_data = response.validate(PaginatedResponse[LocationResponseModel])
-    first_location = validated_data.results[0]
+    first_loc = validated_data.results[0]
 
-    assert response.status_code == 200
+    assert response.status_code == first_location_data["expected_status"]
     assert validated_data.info.count > 0
     assert validated_data.info.pages > 0
-    assert first_location.id == 1
-    assert first_location.name == "Earth (C-137)"
-    assert first_location.type == "Planet"
-    assert first_location.dimension == "Dimension C-137"
+    assert first_loc.id == first_location_data["expected_id"]
+    assert first_loc.name == first_location_data["expected_name"]
+    assert first_loc.type == first_location_data["expected_type"]
+    assert first_loc.dimension == first_location_data["expected_dimension"]
 
 
-def test_get_earth(location):
-    """
-    驗證取得 ID 為 1 的地點 (Earth C-137)
-    """
-    response = location.get_single_location(1)
+def test_get_earth(location, single_location_data):
+    """ 驗證取得特定 ID 的地點 """
+    response = location.get_single_location(single_location_data["location_id"])
     validated_data = response.validate(LocationResponseModel)
     
-    assert response.status_code == 200
-    assert validated_data.id == 1
-    assert validated_data.name == "Earth (C-137)"
-    assert validated_data.dimension == "Dimension C-137"
+    assert response.status_code == single_location_data["expected_status"]
+    assert validated_data.id == single_location_data["location_id"]
+    assert validated_data.name == single_location_data["expected_name"]
+    assert validated_data.dimension == single_location_data["expected_dimension"]
 
 
-def test_filter_location_by_name(location):
-    """
-    測試透過名稱篩選地點
-    """
-    response = location.filter_locations(name="Post-Apocalyptic Earth")
+def test_filter_location_by_name(location, filter_location_data):
+    """ 測試透過參數篩選地點 (支援動態多組參數) """
+    # ** 字典解包，將 JSON 裡的 query_params 自動轉成函式參數
+    response = location.filter_locations(**filter_location_data["query_params"])
     validated_data = response.validate(PaginatedResponse[LocationResponseModel])
     
-    assert response.status_code == 200
+    assert response.status_code == filter_location_data["expected_status"]
     assert len(validated_data.results) > 0
-    assert validated_data.results[0].name == "Post-Apocalyptic Earth"
-    assert validated_data.results[0].type == "Planet"
+    assert validated_data.results[0].name == filter_location_data["expected_name"]
+    assert validated_data.results[0].type == filter_location_data["expected_type"]
 
 
-@pytest.mark.parametrize("location_id, expected_name", [
-    (1, "Earth (C-137)"),
-    (2, "Abadango"),
-    (3, "Citadel of Ricks"), 
-    (4, "Worldender's lair")
-])
-def test_get_multiple_locations_by_id(location, location_id, expected_name):
-    """
-    透過不同 ID 查詢不同地點，並驗證每個地點的資料是否正確。
-    """
-    response = location.get_single_location(location_id)
+def test_get_multiple_locations_by_id(location, multiple_location_data):
+    """ 透過不同 ID 查詢不同地點，驗證回傳結果 """
+    # 完全移除了原本冗長的 @pytest.mark.parametrize 陣列
+    response = location.get_single_location(multiple_location_data["location_id"])
     validated_data = response.validate(LocationResponseModel)
 
-    assert response.status_code == 200
+    assert response.status_code == multiple_location_data["expected_status"]
     assert len(validated_data.name) > 0
-    assert validated_data.name == expected_name
-
+    assert validated_data.name == multiple_location_data["expected_name"]

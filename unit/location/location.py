@@ -7,12 +7,11 @@ class Location(RequestAPI):
     def __init__(self, base_url: str):
         """
         初始化 Location。
-        :param base_url: API 的基礎 URL (例如: https://rickandmortyapi.com/api)
+        :param base_url: API 的基礎 URL (https://rickandmortyapi.com/api)
         """
         super().__init__(base_url)
         self.path_prefix = "/location"
         self.set_api()  # 呼叫 set_api 來設定此業務邏輯層的 API 細節
-        self.url  = None
 
     def set_api(self):
         """設定 Location API 的特有資訊"""
@@ -56,9 +55,8 @@ class Location(RequestAPI):
                          dimension: Optional[str] = None):
         """
         根據查詢參數篩選地點。
-        注意：API 文件中的 'type' 是 Python 的保留關鍵字，
-        因此在函式參數中我們使用 'location_type' 來避免衝突。
-        對應於: GET /location?name=...&type=...&dimension=...
+        注意: API 文件中的 'type' 是 Python 的保留關鍵字，
+        GET /location?name=...&type=...&dimension=...
         """
         params = {
             "name": name,

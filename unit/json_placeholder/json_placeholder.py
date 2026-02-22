@@ -24,5 +24,4 @@ class JSONPlaceholder(RequestAPI):
         """
         業務邏輯：修改貼文
         """
-        path = f"{self.path_prefix}/{article_id}"
-        return self.put(path, json=payload)
+        return self.put(self.path_prefix + f"/{article_id}", json=payload)

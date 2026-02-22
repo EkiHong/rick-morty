@@ -1,15 +1,37 @@
 {
-    "test_earth_location": {
-        "location_name": "Earth",
+    "get_first_location": {
+        "expected_status": 200,
+        "expected_id": 1,
+        "expected_name": "Earth (C-137)",
+        "expected_type": "Planet",
         "expected_dimension": "Dimension C-137"
     },
-    "test_location_by_id": {
+    "get_single_location": {
         "location_id": 1,
+        "expected_status": 200,
         "expected_name": "Earth (C-137)",
-        "expected_type": "Planet"
+        "expected_dimension": "Dimension C-137"
     },
-    "test_location_residents": {
-        "location_name": "Earth",
-        "expected_min_residents": 1
-    }
+    "filter_locations": [
+        {
+            "case_name": "filter_by_name_post_apocalyptic_earth",
+            "query_params": {"name": "Post-Apocalyptic Earth"},
+            "expected_status": 200,
+            "expected_name": "Post-Apocalyptic Earth",
+            "expected_type": "Planet"
+        }, 
+        {
+            "case_name": "find_abadango",
+            "query_params": {"name": "Abadango"},
+            "expected_status": 200,
+            "expected_name": "Abadango",
+            "expected_type": "Cluster"
+        }
+    ],
+    "multiple_locations": [
+        {"case_name": "get_earth", "location_id": 1, "expected_name": "Earth (C-137)", "expected_status": 200},
+        {"case_name": "get_abadango", "location_id": 2, "expected_name": "Abadango", "expected_status": 200},
+        {"case_name": "get_citadel", "location_id": 3, "expected_name": "Citadel of Ricks", "expected_status": 200},
+        {"case_name": "get_worldender", "location_id": 4, "expected_name": "Worldender's lair", "expected_status": 200}
+    ]
 }
