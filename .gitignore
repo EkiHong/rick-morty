@@ -3,4 +3,5 @@ output/
 __pycache__/
 .pytest_cache/
 reports/
+/venv/
 .DS_Store
