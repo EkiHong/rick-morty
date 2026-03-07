@@ -18,7 +18,9 @@ class RequestAPI(AbstractAPI):
         url = f"{self.base_url}{endpoint}"
         kwargs.setdefault("headers", self.headers)
         kwargs.setdefault("timeout", self.timeout)
-
+        # HTTP GET 請求的特殊處理：過濾掉值為 None 的參數，避免傳給 requests 後變成 "?name=Earth&type=None" 
+        if "params" in kwargs and isinstance(kwargs["params"], dict):
+            kwargs["params"] = {k: v for k, v in kwargs["params"].items() if v is not None}
         try:
             response = self.session.get(url, **kwargs)
             return APIResponse(response)

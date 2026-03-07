@@ -27,15 +27,16 @@ def test_get_earth(location, single_location_data):
     assert validated_data.dimension == single_location_data["expected_dimension"]
 
 
+# 最後兩題 error 待修正.
 def test_filter_location_by_name(location, filter_location_data):
     """ 測試透過參數篩選地點 (支援動態多組參數) """
     # ** 字典解包，將 JSON 裡的 query_params 自動轉成函式參數
     response = location.filter_locations(**filter_location_data["query_params"])
     validated_data = response.validate(PaginatedResponse[LocationResponseModel])
-    
+
     assert response.status_code == filter_location_data["expected_status"]
     assert len(validated_data.results) > 0
-    assert validated_data.results[0].name == filter_location_data["expected_name"]
+    assert validated_data.results[0].name == filter_location_data["expected_result"]
     assert validated_data.results[0].type == filter_location_data["expected_type"]
 
 

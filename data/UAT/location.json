@@ -14,18 +14,47 @@
     },
     "test_filter_location_by_name": [
         {
-            "case_name": "filter_by_name_post_apocalyptic_earth",
+            "case_name": "post_apocalyptic_earth",
             "query_params": {"name": "Post-Apocalyptic Earth"},
             "expected_status": 200,
-            "expected_name": "Post-Apocalyptic Earth",
+            "expected_result": "Post-Apocalyptic Earth",
             "expected_type": "Planet"
         }, 
         {
-            "case_name": "find_abadango",
+            "case_name": "abadango",
             "query_params": {"name": "Abadango"},
             "expected_status": 200,
-            "expected_name": "Abadango",
+            "expected_result": "Abadango",
             "expected_type": "Cluster"
+        }, 
+        {
+            "case_name": "null_name",
+            "query_params": {"name": null},
+            "expected_status": 200,
+            "expected_result": "Citadel of Ricks",
+            "expected_type": "Space station"
+        }, 
+        {
+            "case_name": "empty_name",
+            "query_params": {"name": ""},
+            "expected_status": 200,
+            "expected_result": "Citadel of Ricks",
+            "expected_type": "Space station"
+        }, 
+        {
+            "case_name": "error_type",
+            "query_params": {"type": 1},
+            "expected_status": 404,
+            "expected_result": "There is nothing here", 
+            "expected_type": "missing"
+        }, 
+        {
+            "case_name": "error_dimension",
+            "query_params": {"dimension": "你好世界"},
+            "expected_status": 404,
+            "expected_result": "There is nothing here", 
+            "expected_type": "missing"
+
         }
     ],
     "test_get_multiple_locations_by_id": [

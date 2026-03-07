@@ -49,21 +49,14 @@ class Location(RequestAPI):
             params["page"] = page
         return self.get(self.path_prefix, params=params)
 
-    def filter_locations(self,
-                         name: Optional[str] = None,
-                         location_type: Optional[str] = None,
-                         dimension: Optional[str] = None):
-        """
-        根據查詢參數篩選地點。
-        注意: API 文件中的 'type' 是 Python 的保留關鍵字，
-        GET /location?name=...&type=...&dimension=...
-        """
-        params = {
-            "name": name,
-            "type": location_type,
-            "dimension": dimension
-        }
-        # 過濾掉值為 None 的參數，以建立乾淨的查詢
-        cleaned_params = {k: v for k, v in params.items() if v is not None}
-        return self.get(self.path_prefix, params=cleaned_params)
 
+    def filter_locations(self, **kwargs):
+            """
+            Point of Extension: 這裡我們使用 **kwargs 來實現更靈活的參數接收。
+            透過 **kwargs 動態接收所有查詢參數。
+            Testcase 傳入 {"name": "Earth", "type": None}，
+            這裡的 kwargs 就會是 {"name": "Earth", "type": None}
+            這裡完全不使用 Pydantic 檢查，直接接收 Testcase 傳來的任何變異資料 (包含型別錯誤)，
+            並原封不動地交給 Framework 底層。底層只會負責過濾掉 None。
+            """
+            return self.get(self.path_prefix, params=kwargs)
